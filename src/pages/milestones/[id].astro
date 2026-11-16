@@ -1,0 +1,81 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MilestoneDetail from '@/components/milestones/MilestoneDetail.svelte';
+import { getCatalog, getMilestoneDetail } from '@/lib/data/plan-data';
+
+export async function getStaticPaths() {
+  const { milestones } = await getCatalog();
+  return milestones.map((milestone) => ({ params: { id: milestone.id } }));
+}
+
+const { id } = Astro.params;
+const catalog = await getCatalog();
+const detail = await getMilestoneDetail(id!);
+
+if (!detail) return Astro.redirect('/');
+
+const deadline = detail.milestone.deadline
+  ? new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(
+      detail.milestone.deadline,
+    )
+  : null;
+---
+
+<BaseLayout title={`${detail.milestone.title} — ${catalog.program.title}`} catalog={catalog}>
+  <main class="page">
+    <p class="back">
+      <a href="/roadmap/">← Roadmap</a>
+    </p>
+
+    <h1>{detail.milestone.title}</h1>
+    {deadline && <p class="when">Due {deadline}</p>}
+    <p class="lede">{detail.milestone.description}</p>
+
+    {detail.bodyHtml && <div class="prose" set:html={detail.bodyHtml} />}
+
+    <MilestoneDetail milestoneId={detail.milestone.id} client:only="svelte" />
+  </main>
+</BaseLayout>
+
+<style>
+  .back {
+    margin-block-end: var(--space-m);
+    font-size: var(--font-size-s);
+  }
+
+  h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--line-height-tight);
+  }
+
+  .when {
+    margin-block-start: var(--space-2xs);
+    color: var(--color-text-quiet);
+    font-size: var(--font-size-s);
+  }
+
+  .lede {
+    max-width: 44rem;
+    margin-block: var(--space-m) var(--space-l);
+    font-size: var(--font-size-l);
+    color: var(--color-text-quiet);
+    line-height: var(--line-height-normal);
+  }
+
+  .prose {
+    max-width: 44rem;
+    margin-block-end: var(--space-xl);
+    line-height: var(--line-height-normal);
+  }
+
+  .prose :global(h2) {
+    margin-block: var(--space-l) var(--space-xs);
+    font-size: var(--font-size-l);
+  }
+
+  .prose :global(p),
+  .prose :global(ul) {
+    margin-block-end: var(--space-m);
+  }
+</style>

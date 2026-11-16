@@ -1,0 +1,38 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FeatureBrowser from '@/components/features/FeatureBrowser.svelte';
+import { getCatalog } from '@/lib/data/plan-data';
+
+const catalog = await getCatalog();
+
+// Phase tags are the ones milestones carry, which is how a phase is scoped.
+const milestoneTagIds = new Set(catalog.milestones.flatMap((m) => m.tags));
+const phaseTags = catalog.tags.filter((tag) => milestoneTagIds.has(tag.id));
+---
+
+<BaseLayout title={`Features — ${catalog.program.title}`} catalog={catalog}>
+  <main class="page">
+    <h1>All features</h1>
+    <p class="lede">
+      Everything available to fund, in or out of your roadmap. Filter by phase to scope a funding
+      decision.
+    </p>
+
+    <FeatureBrowser phaseTags={phaseTags} client:only="svelte" />
+  </main>
+</BaseLayout>
+
+<style>
+  h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  .lede {
+    max-width: 44rem;
+    margin-block: var(--space-xs) var(--space-xl);
+    color: var(--color-text-quiet);
+    font-size: var(--font-size-l);
+    line-height: var(--line-height-normal);
+  }
+</style>

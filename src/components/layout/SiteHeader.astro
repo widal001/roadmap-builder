@@ -1,0 +1,84 @@
+---
+import RoadmapTotal from '@/components/roadmap/RoadmapTotal.svelte';
+import type { Catalog } from '@/types/domain';
+
+type Props = {
+  catalog: Catalog;
+  programTitle: string;
+};
+
+const { catalog, programTitle } = Astro.props;
+
+// The header is on every page, so this island is also what hands the menu to
+// the roadmap store. Other islands read from the store and render empty until
+// it has loaded, so their order of mounting doesn't matter.
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__brand" href="/">
+      {programTitle}
+    </a>
+
+    <nav class="site-header__nav" aria-label="Main">
+      <a href="/features/">Features</a>
+      <a href="/roadmap/">Roadmap</a>
+    </nav>
+
+    <RoadmapTotal catalog={catalog} client:only="svelte" />
+  </div>
+</header>
+
+<style>
+  /* Sticky, because the roadmap total is the number the whole session is
+     about. It should never be more than a glance away. */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: var(--color-surface-ink);
+    color: var(--color-text-invert);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m) var(--space-l);
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding: var(--space-s) var(--space-m);
+  }
+
+  .site-header__brand {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-l);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header__nav {
+    display: flex;
+    gap: var(--space-m);
+    margin-inline-end: auto;
+  }
+
+  .site-header__nav a {
+    color: inherit;
+    font-size: var(--font-size-s);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    padding-block: var(--space-2xs);
+    border-bottom: 2px solid transparent;
+  }
+
+  .site-header__nav a:hover {
+    border-bottom-color: var(--color-accent-quiet);
+  }
+
+  .site-header :focus-visible {
+    outline: 2px solid var(--color-accent-quiet);
+    outline-offset: 3px;
+  }
+</style>

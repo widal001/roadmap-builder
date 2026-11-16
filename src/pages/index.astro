@@ -1,0 +1,97 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MilestoneChooser from '@/components/milestones/MilestoneChooser.svelte';
+import { getCatalog } from '@/lib/data/plan-data';
+import { sizeToCents, formatCents } from '@/lib/budget/format-size';
+import { newMilestoneHref } from '@/lib/roadmap/milestone-links';
+
+const catalog = await getCatalog();
+
+// The features no suggested milestone claims are what someone building their
+// own milestone starts from, so the entry point advertises how much is there.
+const unpaired = catalog.features.filter((f) => f.milestoneId === null);
+const unpairedValue = unpaired.reduce((total, f) => total + sizeToCents(f.size), 0);
+---
+
+<BaseLayout title={`Choose your roadmap — ${catalog.program.title}`} catalog={catalog}>
+  <main class="page">
+    <div class="intro">
+      <h1>Choose your roadmap</h1>
+      <p>
+        Pick the milestones you want to fund for the Navigator. Start from one we've suggested, or
+        build your own.
+      </p>
+    </div>
+
+    <section aria-labelledby="suggested">
+      <h2 id="suggested">Suggested milestones</h2>
+      <!-- client:only because the chooser reads the roadmap saved in
+           localStorage, which the server can't see. -->
+      <MilestoneChooser client:only="svelte" />
+    </section>
+
+    <section class="build" aria-labelledby="build-your-own">
+      <h2 id="build-your-own">Build your own milestone</h2>
+      <p>
+        {unpaired.length} features sit outside the suggested milestones, worth{' '}
+        {formatCents(unpairedValue)}. You can pull in anything from a suggested milestone too.
+      </p>
+      <p class="build__actions">
+        <a class="button" href={newMilestoneHref()}>
+          Build your own milestone
+        </a>
+        <a class="button--secondary" href="/features/">
+          Browse all features
+        </a>
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .intro {
+    max-width: 44rem;
+  }
+
+  .intro h1 {
+    margin-block-end: var(--space-xs);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  .intro p {
+    color: var(--color-text-quiet);
+    font-size: var(--font-size-l);
+    line-height: var(--line-height-normal);
+  }
+
+  h2 {
+    margin-block-end: var(--space-m);
+    font-size: var(--font-size-xl);
+  }
+
+  .build {
+    padding: var(--space-l);
+    background-color: var(--color-surface-quiet);
+    border-radius: var(--radius-panel);
+  }
+
+  .build p {
+    max-width: 44rem;
+    color: var(--color-text-quiet);
+    line-height: var(--line-height-normal);
+  }
+
+  .build__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-m);
+    margin-block-start: var(--space-m);
+  }
+</style>

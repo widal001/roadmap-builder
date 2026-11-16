@@ -1,0 +1,96 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FeatureStatusControl from '@/components/features/FeatureStatusControl.svelte';
+import DependencyViews from '@/components/features/DependencyViews.svelte';
+import { getCatalog, getFeatureDetail } from '@/lib/data/plan-data';
+import { findCategory } from '@/config/categories';
+import { findSize } from '@/config/sizes';
+import { formatCents, sizeToCents } from '@/lib/budget/format-size';
+import { buildDependencyTree } from '@/lib/graph/build-dependency-tree';
+
+export async function getStaticPaths() {
+  const { features } = await getCatalog();
+  return features.map((feature) => ({ params: { id: feature.id } }));
+}
+
+const { id } = Astro.params;
+const catalog = await getCatalog();
+const detail = await getFeatureDetail(id!);
+
+if (!detail) return Astro.redirect('/features/');
+
+const { feature } = detail;
+const category = findCategory(feature.category);
+const size = findSize(feature.size);
+const backHref = detail.milestone ? `/milestones/${detail.milestone.id}/` : '/features/';
+const backLabel = detail.milestone ? detail.milestone.title : 'All features';
+
+// Both directions are built here so the island ships finished trees rather
+// than the whole catalog. The titles let a dependency name the milestone it is
+// suggested for; the roadmap stores supply the one the client actually chose.
+const upstream = buildDependencyTree(catalog.features, feature.id, 'upstream');
+const downstream = buildDependencyTree(catalog.features, feature.id, 'downstream');
+const menuMilestoneTitles = Object.fromEntries(
+  catalog.milestones.map((milestone) => [milestone.id, milestone.title]),
+);
+---
+
+<BaseLayout title={`${feature.title} — ${catalog.program.title}`} catalog={catalog}>
+  <main class="page">
+    <p class="back">
+      <a href={backHref}>← {backLabel}</a>
+    </p>
+
+    <h1>{feature.title}</h1>
+    <p class="meta">
+      {category?.label ?? feature.category}
+      <span aria-hidden="true">·</span>
+      Size {size?.label ?? feature.size}
+      <span aria-hidden="true">·</span>
+      <strong>{formatCents(sizeToCents(feature.size))}</strong>
+    </p>
+
+    <FeatureStatusControl featureId={feature.id} client:only="svelte" />
+
+    {detail.bodyHtml && <div class="prose" set:html={detail.bodyHtml} />}
+
+    <DependencyViews {upstream} {downstream} {menuMilestoneTitles} client:visible />
+  </main>
+</BaseLayout>
+
+<style>
+  .back {
+    margin-block-end: var(--space-m);
+    font-size: var(--font-size-s);
+  }
+
+  h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--line-height-tight);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-block: var(--space-xs) var(--space-l);
+    color: var(--color-text-quiet);
+  }
+
+  .prose {
+    max-width: 44rem;
+    margin-block: var(--space-xl);
+    line-height: var(--line-height-normal);
+  }
+
+  .prose :global(h2) {
+    margin-block: var(--space-l) var(--space-xs);
+    font-size: var(--font-size-l);
+  }
+
+  .prose :global(p),
+  .prose :global(ul) {
+    margin-block-end: var(--space-m);
+  }
+</style>

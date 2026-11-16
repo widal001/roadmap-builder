@@ -1,0 +1,19 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import MilestoneWorkspace from '@/components/milestones/MilestoneWorkspace.svelte';
+import { getCatalog } from '@/lib/data/plan-data';
+
+const catalog = await getCatalog();
+
+// Phase tags are the ones milestones carry, which is how a phase is scoped.
+const milestoneTagIds = new Set(catalog.milestones.flatMap((m) => m.tags));
+const phaseTags = catalog.tags.filter((tag) => milestoneTagIds.has(tag.id));
+---
+
+<BaseLayout title={`Change a milestone — ${catalog.program.title}`} catalog={catalog}>
+  <main>
+    <!-- client:only because which milestone this is, and everything about it,
+         comes from the roadmap saved in the browser. -->
+    <MilestoneWorkspace phaseTags={phaseTags} client:only="svelte" />
+  </main>
+</BaseLayout>
