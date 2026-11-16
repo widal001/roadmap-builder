@@ -1,0 +1,21 @@
+{
+  // Cloudflare Workers config. Astro's Cloudflare adapter reads this file and
+  // writes a merged copy into dist/client/ at build time, so bindings added
+  // here are available both to `wrangler dev` and to the deployed Worker.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "roadmap-builder",
+  "compatibility_date": "2026-11-16",
+
+  // v0 is entirely prerendered, so the Worker only serves static assets.
+  "assets": {
+    "directory": "./dist/client",
+  },
+
+  "observability": {
+    "enabled": true,
+  },
+
+  // When plan data moves to D1 (Phase 7), add the binding here and flip the
+  // pages that need it to `export const prerender = false`:
+  // "d1_databases": [{ "binding": "DB", "database_name": "roadmap-builder", "database_id": "..." }]
+}
