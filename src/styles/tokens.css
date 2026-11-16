@@ -1,0 +1,112 @@
+/*
+ * Semantic design tokens.
+ *
+ * Every value here points at the active theme. Component CSS references only
+ * these names, never a theme variable directly, so swapping the theme file in
+ * global.css re-skins the whole app.
+ *
+ * Contrast ratios are measured against the surface the token actually sits on.
+ */
+
+:root {
+  /* ---------------- Surfaces ---------------- */
+
+  --color-surface: var(--brand-white); /* the page */
+  --color-surface-quiet: var(--brand-mist); /* cards, the roadmap summary */
+  --color-surface-sunk: var(--brand-mist); /* wells, unselected rows */
+  --color-surface-ink: var(--brand-ink-navy); /* the navbar and filled buttons */
+  --color-surface-selected: #e6f0f8; /* a feature that is in the roadmap */
+
+  /* ---------------- Text ---------------- */
+
+  --color-text: var(--brand-ink-navy); /* 15.5:1 on surface — AAA */
+  --color-text-quiet: var(--brand-slate); /* 7.4:1 on surface — AAA */
+  --color-text-faint: var(--brand-placeholder); /* 5.2:1 on surface — AA */
+  --color-text-invert: var(--brand-white); /* 15.5:1 on surface-ink — AAA */
+
+  --color-accent: var(--brand-blue); /* 6.4:1 on surface — AA+ */
+  --color-accent-hover: var(--brand-blue-hover); /* 9.4:1 on surface — AAA */
+  --color-accent-quiet: var(--brand-cyan);
+  --color-highlight: var(--brand-coral); /* draws the eye; never the only signal */
+
+  /*
+   * Status and progress.
+   *
+   * Named for what they mean, so a status that gets renamed in config doesn't
+   * strand a colour called "coral". Colour is never the only signal: every
+   * status also carries its label.
+   */
+  --color-status-backlog-bg: var(--brand-neutral-tint);
+  --color-status-backlog-ink: var(--brand-neutral-ink);
+  --color-status-prioritized-bg: var(--brand-blue-tint);
+  --color-status-prioritized-ink: var(--brand-blue-ink);
+  --color-status-in-progress-bg: var(--brand-cyan-tint);
+  --color-status-in-progress-ink: var(--brand-cyan-ink);
+  --color-status-in-review-bg: var(--brand-coral-tint);
+  --color-status-in-review-ink: var(--brand-coral-ink);
+  --color-status-done-bg: var(--brand-green-tint);
+  --color-status-done-ink: var(--brand-green-ink);
+  --color-status-cancelled-bg: var(--brand-neutral-tint);
+  --color-status-cancelled-ink: var(--brand-placeholder);
+
+  /** Delivered work. The one place green means "good" rather than "a state". */
+  --color-progress: var(--brand-green-ink);
+  --color-progress-track: var(--brand-green-tint);
+
+  /* ---------------- Lines ---------------- */
+
+  --color-line: var(--brand-hairline);
+  --color-line-soft: var(--brand-hairline-soft);
+  --color-line-strong: var(--brand-ink-navy); /* under a total */
+  --color-field-border: var(--brand-field-border);
+
+  /* The focus ring is the accent, thick enough to read on every surface. */
+  --color-focus: var(--brand-blue);
+
+  /* ---------------- Type ---------------- */
+
+  --font-sans: var(--brand-font-sans);
+  --font-mono: var(--brand-font-mono);
+
+  --font-size-xs: 0.75rem;
+  --font-size-s: 0.875rem;
+  --font-size-m: 1rem;
+  --font-size-l: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2.5rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.15;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.55;
+
+  /* ---------------- Space, geometry, motion ---------------- */
+
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+
+  --radius-btn: var(--brand-radius-btn);
+  --radius-card: var(--brand-radius-card);
+  --radius-panel: var(--brand-radius-panel);
+
+  --container-page: var(--brand-container);
+
+  --shadow-btn: var(--brand-shadow-btn);
+  --shadow-card: var(--brand-shadow-card);
+  --shadow-card-hover: var(--brand-shadow-card-hover);
+
+  --transition-fast: 0.15s var(--brand-ease);
+}

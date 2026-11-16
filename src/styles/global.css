@@ -1,0 +1,168 @@
+/*
+ * The single stylesheet every page imports.
+ *
+ * Load order matters. The theme supplies raw values, tokens map them onto
+ * semantic names, and everything after that uses only the semantic names.
+ * Re-skinning for a different client means changing the theme import.
+ */
+
+@import './themes/default.css';
+@import './tokens.css';
+@import './reset.css';
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-m);
+  color: var(--color-text);
+  background-color: var(--color-surface-sunken);
+}
+
+h1,
+h2,
+h3 {
+  line-height: var(--line-height-tight);
+}
+
+/* Centres page content and guarantees a gutter at narrow widths. */
+.page {
+  width: 100%;
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--space-m);
+  padding-block: var(--space-l);
+}
+
+.visually-hidden:not(:focus):not(:active) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+ * Buttons and button-like links
+ *
+ * Three levels, and no more. Primary is the one action a screen is asking for;
+ * secondary is everything else actionable; quiet is for destructive or
+ * step-back actions that shouldn't draw the eye. A link that performs an
+ * action gets a button class, so "go somewhere" and "do something" don't look
+ * identical.
+ * ------------------------------------------------------------------------ */
+
+.button,
+.button--secondary,
+.button--quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-m);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.button {
+  color: var(--color-text-invert);
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-btn);
+}
+
+.button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* Outlined, no fill: actionable, but clearly not the main thing. */
+.button--secondary {
+  color: var(--color-accent);
+  background-color: transparent;
+  border-color: var(--color-accent);
+}
+
+.button--secondary:hover {
+  color: var(--color-text-invert);
+  background-color: var(--color-accent);
+}
+
+.button--quiet {
+  color: var(--color-text-quiet);
+  background-color: transparent;
+  border-color: var(--color-line);
+}
+
+.button--quiet:hover {
+  color: var(--color-text);
+  border-color: var(--color-field-border);
+}
+
+.button--small {
+  padding: var(--space-2xs) var(--space-s);
+  font-size: var(--font-size-s);
+}
+
+.button[disabled],
+.button--secondary[disabled],
+.button--quiet[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------------------
+ * Status pills
+ *
+ * One class per configured feature status. Each carries its own tint and ink
+ * so the colour reinforces the label without ever replacing it.
+ * ------------------------------------------------------------------------ */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3xs) var(--space-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-btn);
+  white-space: nowrap;
+}
+
+.status--backlog {
+  color: var(--color-status-backlog-ink);
+  background-color: var(--color-status-backlog-bg);
+}
+
+.status--prioritized {
+  color: var(--color-status-prioritized-ink);
+  background-color: var(--color-status-prioritized-bg);
+}
+
+.status--in_progress {
+  color: var(--color-status-in-progress-ink);
+  background-color: var(--color-status-in-progress-bg);
+}
+
+.status--in_review {
+  color: var(--color-status-in-review-ink);
+  background-color: var(--color-status-in-review-bg);
+}
+
+.status--done {
+  color: var(--color-status-done-ink);
+  background-color: var(--color-status-done-bg);
+}
+
+.status--cancelled {
+  color: var(--color-status-cancelled-ink);
+  background-color: var(--color-status-cancelled-bg);
+  text-decoration: line-through;
+}
